@@ -1,86 +1,85 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const form = document.querySelector("form");
-    const email = document.getElementById("email");
-    const country = document.getElementById("country");
-    const zipcode = document.getElementById("zipcode");
-    const password = document.getElementById("password");
-    const passwordConfirm = document.getElementById("password-confirmation");
-    
-    const validateEmail = () => {
-      if(!email.validity.valid) {
-        showError(email, "Please enter a valid email")
-      } else {
-        hideError(email)
-      }
+  const form = document.querySelector("form");
+  const email = document.getElementById("email");
+  const country = document.getElementById("country");
+  const zipcode = document.getElementById("zipcode");
+  const password = document.getElementById("password");
+  const passwordConfirm = document.getElementById("password-confirmation");
+
+  const validateEmail = () => {
+    if (!email.validity.valid) {
+      showError(email, "Please enter a valid email");
+    } else {
+      showSuccess(email);
     }
-    
-    const validateCountry = () => {
-      if(country.value.trim() === "") {
-        showError(country, "Country cannot be empty")
-      }else {
-        hideError(country)
-      }
+  };
+
+  const validateCountry = () => {
+    if (country.value.trim() === "") {
+      showError(country, "Country cannot be empty");
+    } else {
+      showSuccess(country);
     }
-    
-    function validateZipcode() {
-      const regex = /^[0-9]{5}$/; // Example: 5-digit US zip code
-      if (!regex.test(zipcode.value.trim())) {
-        showError(zipcode, "Please enter a valid zip code.");
-      } else {
-        hideError(zipcode);
-      }
+  };
+
+  const validateZipcode = () => {
+    const regex = /^[0-9]{5}$/;
+    if (!regex.test(zipcode.value.trim())) {
+      showError(zipcode, "Please enter a valid zip code.");
+    } else {
+      showSuccess(zipcode);
     }
-    
-    const validatePassword = () => {
-      if(password.value.length < 8) {
-        showError(password, "Password must be 8 characters")
-      } else {
-        hideError(password)
-      }
+  };
+
+  const validatePassword = () => {
+    if (password.value.length < 8) {
+      showError(password, "Password must be at least 8 characters");
+    } else {
+      showSuccess(password);
     }
-    
-    const validatePasswordConfirm = () => {
-      if(passwordConfirm.value != password.value) {
-        showError(passwordConfirm, "Passwords do not match")
-      } else {
-        hideError(passwordConfirm)
-      }
+  };
+
+  const validatePasswordConfirm = () => {
+    if (passwordConfirm.value !== password.value) {
+      showError(passwordConfirm, "Passwords do not match");
+    } else {
+      showSuccess(passwordConfirm);
     }
-    
-    function showError(input, message) {
-    const error = input.nextElementSibling; 
+  };
+
+  function showError(input, message) {
+    const error = input.nextElementSibling;
     error.textContent = message;
-    error.style.display = "inline";
+    input.classList.add("is-invalid");
+    input.classList.remove("is-valid");
   }
-    
-    const hideError = (input) => {
-      const error = input.nextElementSibling;
-      error.textContent = "";
-      error.style.display = "none";
+
+  function showSuccess(input) {
+    const error = input.nextElementSibling;
+    error.textContent = "";
+    input.classList.add("is-valid");
+    input.classList.remove("is-invalid");
+  }
+
+  email.addEventListener("blur", validateEmail);
+  country.addEventListener("blur", validateCountry);
+  zipcode.addEventListener("blur", validateZipcode);
+  password.addEventListener("blur", validatePassword);
+  passwordConfirm.addEventListener("blur", validatePasswordConfirm);
+
+  form.addEventListener("submit", (e) => {
+    validateEmail();
+    validateCountry();
+    validateZipcode();
+    validatePassword();
+    validatePasswordConfirm();
+
+    const errors = form.querySelectorAll(".is-invalid");
+    if (errors.length > 0) {
+      e.preventDefault();
+      alert("Please fix the errors before submitting.");
+    } else {
+      alert("High five! Form submitted successfully.");
     }
-    
-    email.addEventListener("blur", validateEmail);
-    country.addEventListener("blur", validateCountry);
-    zipcode.addEventListener("blur", validateZipcode);
-    password.addEventListener("blur", validatePassword);
-    passwordConfirm.addEventListener("blur", validatePasswordConfirm);
-    
-    
-    form.addEventListener("submit", (e) => {
-      validateEmail();
-      validateCountry();
-      validateZipcode();
-      validatePassword();
-      validatePasswordConfirm();
-  
-      const errors = form.querySelectorAll(".error-message:not(:empty)");
-      if (errors.length > 0) {
-        e.preventDefault(); 
-        alert("Please fix the errors before submitting.");
-      } else {
-        alert("High five! Form submitted successfully.");
-      }
-    });
-    
-    
-  })
+  });
+});
